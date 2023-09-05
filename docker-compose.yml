@@ -1,0 +1,44 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:8.0.32
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: db
+    ports:
+      - 4306:3306
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      TZ: Asia/Tokyo
+  app:
+    tty: true
+    stdin_open: true
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/myapp
+      - bundle:/usr/local/bundle
+      - node_modules:/myapp/node_modules
+      - public-data:/myapp/public
+      - tmp-data:/myapp/tmp
+    command: bash -c "rm -f tmp/pids/server.pid && rails server -b 0.0.0.0"
+    environment:
+      TZ: Asia/Tokyo
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+volumes:
+  db:
+    driver: local
+  bundle:
+    driver: local
+  node_modules:
+    driver: local
+  public-data:
+    driver: local
+  tmp-data:
+    driver: local
