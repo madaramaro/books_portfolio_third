@@ -1,4 +1,4 @@
-<div class="p-8 bg-gray-200 min-h-screen">
+<div class="p-8 bg-blue-800 min-h-screen">
   <!-- Card with DaisyUI -->
   <div class="card bordered max-w-md mx-auto">
     <figure>
@@ -11,6 +11,9 @@
       <div class="card-actions">
         <button class="btn btn-primary">Click Me</button>
       </div>
+<%= link_to "サインアウト", destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %>
+
     </div>
   </div>
 </div>
+

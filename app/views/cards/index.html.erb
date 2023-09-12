@@ -1,0 +1,30 @@
+<h1 class="text-2xl font-bold my-4 border-b pb-2">カード一覧</h1>
+
+<div class="mx-auto max-w-screen-md p-4">
+  <% @cards.each do |card| %>
+    <div class="bg-white shadow-lg rounded-lg mb-6 p-4">
+      <div class="flex flex-col space-y-2">
+        <div class="flex items-center space-x-4">
+          <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-20 h-28 object-cover rounded-lg">
+          <div>
+            <h2 class="text-xl font-semibold mb-2"><%= card.book.title %></h2>
+            <p><strong>投稿者:</strong> <%= card.user ? card.user.name : "不明" %></p>
+            <p><strong>著者:</strong> <%= card.book.author %></p>
+            <p><strong>出版社:</strong> <%= card.book.publisher %></p>
+            <p><strong>出版日:</strong> <%= card.book.published_date %></p>
+          </div>
+        </div>
+        <div>
+          <p class="mt-1 text-gray-500 text-sm"><strong>投稿日:</strong> <%= card.created_at.strftime("%Y-%m-%d %H:%M:%S") %></p>
+        </div>
+        <div class="mt-2">
+          <%= link_to '詳細', card_path(card), class: 'btn btn-primary' %>
+            <% if current_user == card.user %> 
+            <%= link_to '編集', edit_card_path(card), class: 'btn btn-secondary ml-2' %>
+            <% end %>
+        </div>
+      </div>
+    </div>
+    
+  <% end %>
+</div>
