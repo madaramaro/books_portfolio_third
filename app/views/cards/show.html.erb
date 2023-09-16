@@ -1,25 +1,86 @@
-<div class="mx-auto w-[350px] h-[700px] overflow-y-auto p-4 bg-white shadow-2xl rounded-2xl mt-10 transition-transform transform hover:scale-105 border border-gray-300">
-  <div class="flex flex-col items-center my-4">
-    <img src="<%= @card.book.image_url %>" alt="Book Cover" class="max-w-[200px] mb-4 rounded-lg shadow-md">
-    <div class="text-left w-full">
-      <div class="border-b border-black pb-1 mb-2">
-        <strong class="text-xl font-semibold text-black">書籍名:</strong> <%= @card.book.title %>
+<div class="mx-auto w-[350px] h-[700px] mt-10 relative perspective hover:flip">
+
+  <!-- Front of the Card -->
+  <div class="card-face card-front absolute inset-0 p-4 bg-white shadow-2xl rounded-2xl border border-gray-300 transition-transform duration-700">
+    <!-- 表の内容 -->
+    <div class="overflow-y-auto">
+      <div class="flex flex-col items-center my-4">
+        <img src="<%= @card.book.image_url %>" alt="Book Cover" class="max-w-[200px] mb-4 rounded-lg shadow-md">
+        <div class="text-left w-full">
+          <div class="border-b border-black pb-1 mb-2">
+            <strong class="text-xl font-semibold text-black">書籍名:</strong> <%= @card.book.title %>
+          </div>
+          <div class="border-b border-black pb-1 mb-2">
+            <strong class="text-xl font-semibold text-black">著者:</strong> <%= @card.book.author %>
+          </div>
+          <div class="border-b border-black pb-1 mb-2">
+            <strong class="text-xl font-semibold text-black">出版社:</strong> <%= @card.book.publisher %>
+          </div>
+          <div class="border-b border-black pb-1 mb-2">
+            <strong class="text-xl font-semibold text-black">出版日:</strong> <%= @card.book.published_date %>
+          </div>
+        </div>
       </div>
-      <div class="border-b border-black pb-1 mb-2">
-        <strong class="text-xl font-semibold text-black">著者:</strong> <%= @card.book.author %>
-      </div>
-      <div class="border-b border-black pb-1 mb-2">
-        <strong class="text-xl font-semibold text-black">出版社:</strong> <%= @card.book.publisher %>
-      </div>
-      <div class="border-b border-black pb-1 mb-2">
-        <strong class="text-xl font-semibold text-black">出版日:</strong> <%= @card.book.published_date %>
+      <div class="mt-2 text-left w-full">
+        <div class="border-b border-black pb-1 mb-2">
+          <strong class="text-lg font-medium text-black">推しポイント:</strong>
+        </div>
+        <p class="mt-2 text-gray-800"><%= @card.text %></p>
       </div>
     </div>
   </div>
-  <div class="mt-2 text-left w-full">
-    <div class="border-b border-black pb-1 mb-2">
-      <strong class="text-lg font-medium text-black">カードテキスト:</strong>
+
+  <!-- Back of the Card -->
+  <div class="card-face card-back absolute inset-0 p-4 bg-white shadow-2xl rounded-2xl border border-gray-300 transition-transform duration-700">
+    <!-- 裏の内容 -->
+    <div class="overflow-y-auto">
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-black mb-8"><%= @user.name %>'s Profile</h2>
+
+      <% if @user.errors.any? %>
+        <div class="border border-red-500 p-4 rounded mb-4 bg-red-50">
+          <ul class="list-disc pl-5 text-red-600">
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="flex flex-col items-center">
+        <% if @user.profile_image? %>
+          <div class="text-center mb-4">
+            <%= image_tag(@user.profile_image.url, alt: "Profile Image", class: "rounded-full w-24 h-24 mb-4 shadow-md") %>
+          </div>
+        <% end %>
+
+        <div class="text-left w-full">
+          <div class="border-b border-black pb-1 mb-2">
+            <strong class="text-xl font-semibold text-black">Profile:</strong>
+            <p class="mt-2 text-gray-800"><%= @user.profile %></p>
+          </div>
+        </div>
+      </div>
     </div>
-    <p class="mt-2 text-gray-800"><%= @card.text %></p>
   </div>
+
 </div>
+
+
+<div class="mt-4 text-center flex justify-center space-x-2">
+  <%= link_to '戻る', cards_path, class: 'py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700' %>
+  
+  <!-- 隠しテキストフィールド (URLが入力される) -->
+  <input type="text" value="<%= card_url(@card) %>" id="copyURL" style="position: absolute; left: -9999px;">
+  
+  <!-- コピーするボタン -->
+  <button onclick="copyURLToClipboard()" class="py-2 px-4 bg-yellow-500 text-white rounded hover:bg-yellow-700">URLをコピー</button>
+</div>
+
+<script>
+  function copyURLToClipboard() {
+    const copyText = document.getElementById("copyURL");
+    copyText.select();
+    document.execCommand("copy");
+    alert("URLがクリップボードにコピーされました");
+  }
+</script>

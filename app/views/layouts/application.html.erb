@@ -10,9 +10,51 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    
   </head>
 
   <body>
+  <div class="navbar bg-base-100">
+  <div class="flex-1">
+    <a href="#" class="btn btn-ghost normal-case text-xl">OshiBon</a>
+  </div>
+  
+  <div class="flex-none flex items-center gap-2">
+    <!-- ここに新しいリンクを追加 -->
+    <%= link_to '投稿', new_book_path, class: 'btn btn-ghost' %>
+    <%= link_to '一覧', cards_path, class: 'btn btn-ghost' %>
+    
+    <div class="dropdown dropdown-end">
+      <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+      <div class="w-10 rounded-full">
+      <% if current_user && current_user.profile_image.present? %>
+      <%= image_tag(current_user.profile_image.url, alt: "Profile Image", class: "rounded-full w-24 h-24 mx-auto") %>
+      <% else %>
+      <%= image_tag("/images/stock/photo-1534528741775-53994a69daeb.jpg", alt: "Default Profile Image", class: "rounded-full w-24 h-24 mx-auto") %>
+      <% end %>
+      </div>
+      </label>
+        <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+         <% if current_user %>
+         <li>
+         <%= link_to user_path(current_user), class: "justify-between" do %>
+          Profile
+        <span class="badge">New</span>
+          <% end %>
+       </li>
+      <% end %>
+      
+        <li>
+          <%= link_to "Setting", edit_user_registration_path %>
+        </li>
+        <li>
+          <%= link_to "Logout", destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
     <%= yield %>
   </body>
 </html>

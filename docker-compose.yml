@@ -23,6 +23,7 @@ services:
       - bundle:/usr/local/bundle
       - node_modules:/myapp/node_modules
       - public-data:/myapp/public
+      - ./public/uploads:/myapp/public/uploads # これを追加
       - tmp-data:/myapp/tmp
     command: bash -c "rm -f tmp/pids/server.pid && rails server -b 0.0.0.0"
     environment:
@@ -41,4 +42,6 @@ volumes:
   public-data:
     driver: local
   tmp-data:
+    driver: local
+  uploads: # これを追加
     driver: local

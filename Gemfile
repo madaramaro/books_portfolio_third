@@ -22,7 +22,7 @@ gem "importmap-rails"
 gem "turbo-rails"
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
+# gem "stimulus-rails"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -76,3 +76,6 @@ gem "jsbundling-rails", "~> 1.1"
 gem "cssbundling-rails", "~> 1.2"
 gem 'httparty'
 gem 'devise'
+gem 'carrierwave', '~> 2.0'
+gem 'mini_magick' # 画像の処理のため
+

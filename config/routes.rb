@@ -1,21 +1,14 @@
 Rails.application.routes.draw do
-  devise_for :users
-  get 'cards/new'
-  get 'cards/create'
-  root to: "test_styles#index"
-  resources :books, only: [:new, :create, :index, :edit, :update]
+  devise_for :users, controllers: { registrations: 'users/registrations' }
+  resources :users, only: [:show]
 
-  # config/routes.rb
+  root to: "cards#index"
 
-resources :books do
-  resources :cards, only: [:new, :create]
+  resources :books do
+    resources :cards
+  end
+  
+  resources :cards
 end
 
-resources :cards
 
-
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
-end

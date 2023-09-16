@@ -7,5 +7,5 @@ class User < ApplicationRecord
   validates :profile, length: { maximum: 200 } 
 
   has_many :cards
-      
+  mount_uploader :profile_image, ProfileImageUploader    
 end

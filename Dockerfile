@@ -7,6 +7,9 @@ RUN npm install --global yarn
 # MySQL clientのインストール
 RUN apt-get install -y default-mysql-client
 
+# ImageMagickのインストール
+RUN apt-get update && apt-get install -y imagemagick
+
 # アプリケーションディレクトリのセットアップ
 WORKDIR /myapp
 COPY . /myapp

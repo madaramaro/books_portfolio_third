@@ -19,12 +19,16 @@
         </div>
         <div class="mt-2">
           <%= link_to '詳細', card_path(card), class: 'btn btn-primary' %>
-            <% if current_user == card.user %> 
-            <%= link_to '編集', edit_card_path(card), class: 'btn btn-secondary ml-2' %>
-            <% end %>
+          <% if current_user == card.user %> 
+            <%= link_to '編集', edit_card_path(card), class: 'btn btn-secondary ml-2' %> 
+          <%= form_for card, method: :delete, html: { class: 'inline', onsubmit: "return confirm('本当に削除しますか？');" } do |f| %>
+          <%= f.submit '削除', class: 'btn btn-danger ml-2' %>
+          <% end %>
+
+
+          <% end %>
         </div>
       </div>
     </div>
-    
   <% end %>
 </div>

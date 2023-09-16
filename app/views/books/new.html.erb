@@ -1,102 +1,108 @@
-<h1 class="text-2xl font-bold my-4">バーコードをスキャン</h1>
+<h1 class="text-2xl font-bold my-4 border-b pb-2 text-center">バーコードをスキャン</h1> 
 
-<div id="scanner" style="width: 300px; height: 210px;" ></div>
-
-<h1 class="text-2xl font-bold my-4">スキャンした書籍</h1>
-
-<%= form_for @book, html: { class: 'space-y-4' } do |f| %>
-
-  <div class="my-4">
-    <img id="book-cover" src="" alt="Book Cover" class="max-w-[200px] hidden">
-  </div>
-
-  <div class="space-y-2">
-    <%= f.label :title, "書籍名" %>
-    <%= f.text_field :title, placeholder: "Title", id: "book-title-input", class: "w-full p-2 border rounded" %>
-    <%= f.label :author, "著者" %>
-    <%= f.text_field :author, placeholder: "Author", id: "book-author-input", class: "w-full p-2 border rounded" %>
-    <%= f.label :publisher, "出版社" %>
-    <%= f.text_field :publisher, placeholder: "Publisher", id: "book-publisher-input", class: "w-full p-2 border rounded" %>
-    <%= f.label :published_date, "出版日" %>
-    <%= f.text_field :published_date, placeholder: "Published Date", id: "book-published-date-input", class: "w-full p-2 border rounded" %>
-    <%= f.hidden_field :image_url, id: "book-image-url-input" %>
-  </div>
-  
-  <div class="mt-4">
-  <%= f.submit "保存", class: 'py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700' %>
+<div class="flex justify-center my-4">
+  <button type="button" onclick="location.reload();" class='py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700'>カメラ起動</button>
 </div>
 
+<div class="flex justify-center my-4">
+  <div id="scanner" style="width: 300px; height: 210px;"></div>
 </div>
 
-<% end %>
+<h1 class="text-2xl font-bold my-4 border-b pb-2 text-center">スキャンした書籍</h1>
+
+<div class="mx-auto max-w-screen-md p-4">
+  <%= form_for @book, html: { class: 'space-y-4' } do |f| %>
+    <div class="flex justify-center my-4">
+      <img id="book-cover" src="" alt="Book Cover" class="max-w-[200px] hidden">
+    </div>
+
+    <div class="space-y-2">
+      <%= f.label :title, "書籍名", class: "block font-bold" %>
+      <%= f.text_field :title, placeholder: "Title", id: "book-title-input", class: "w-full p-2 border rounded" %>
+      <%= f.label :author, "著者", class: "block font-bold" %>
+      <%= f.text_field :author, placeholder: "Author", id: "book-author-input", class: "w-full p-2 border rounded" %>
+      <%= f.label :publisher, "出版社", class: "block font-bold" %>
+      <%= f.text_field :publisher, placeholder: "Publisher", id: "book-publisher-input", class: "w-full p-2 border rounded" %>
+      <%= f.label :published_date, "出版日", class: "block font-bold" %>
+      <%= f.text_field :published_date, placeholder: "Published Date", id: "book-published-date-input", class: "w-full p-2 border rounded" %>
+      <%= f.hidden_field :image_url, id: "book-image-url-input" %>
+    </div>
+    
+    <div class="mt-4 flex justify-center space-x-2">
+      <%= f.submit "編集画面へ", class: 'py-2 px-4 bg-green-600 text-white rounded hover:bg-green-700' %>
+    </div>
+  <% end %>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+
 <script>
-  function setBookDetailsToForm(details) {
-    document.getElementById('book-title-input').value = details.title || '';
-    document.getElementById('book-author-input').value = details.authors ? details.authors.join(', ') : '';
-    document.getElementById('book-publisher-input').value = details.publisher || '';
-    document.getElementById('book-published-date-input').value = details.publishedDate || '';
-    if (details.imageLinks && details.imageLinks.thumbnail) {
-      const bookCover = document.getElementById('book-cover');
-      const imageUrlInput = document.getElementById('book-image-url-input');
-      bookCover.src = details.imageLinks.thumbnail;
-      imageUrlInput.value = details.imageLinks.thumbnail;
-      bookCover.style.display = 'block';
+  document.addEventListener("DOMContentLoaded", function() {
+
+    function setBookDetailsToForm(details) {
+      document.getElementById('book-title-input').value = details.title || '';
+      document.getElementById('book-author-input').value = details.authors ? details.authors.join(', ') : '';
+      document.getElementById('book-publisher-input').value = details.publisher || '';
+      document.getElementById('book-published-date-input').value = details.publishedDate || '';
+      if (details.imageLinks && details.imageLinks.thumbnail) {
+        const bookCover = document.getElementById('book-cover');
+        const imageUrlInput = document.getElementById('book-image-url-input');
+        bookCover.src = details.imageLinks.thumbnail;
+        imageUrlInput.value = details.imageLinks.thumbnail;
+        bookCover.style.display = 'block';
+      }
     }
-  }
 
-  function fetchBookDetails(isbn) {
-    const API_ENDPOINT = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
-    fetch(API_ENDPOINT)
-    .then(response => response.json())
-    .then(data => {
-      if (data.totalItems > 0) {
-        const bookDetails = data.items[0].volumeInfo;
-        setBookDetailsToForm(bookDetails);
-      } 
-    })
-    .catch(error => {
-      console.error('Error fetching book details:', error);
-    });
-  }
+    function fetchBookDetails(isbn) {
+      const API_ENDPOINT = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
+      fetch(API_ENDPOINT)
+      .then(response => response.json())
+      .then(data => {
+        if (data.totalItems > 0) {
+          const bookDetails = data.items[0].volumeInfo;
+          setBookDetailsToForm(bookDetails);
+        } 
+      })
+      .catch(error => {
+        console.error('Error fetching book details:', error);
+      });
+    }
 
-  if (document.querySelector('#scanner')) {
-    console.log(document.querySelector('#scanner').getBoundingClientRect());
-
-    Quagga.init({
-      inputStream: {
-        name: "Live",
-        type: "LiveStream",
-        target: document.querySelector('#scanner'),
-        constraints: {
-          width: 640,
-          height: 480
+    if (document.querySelector('#scanner')) {
+      Quagga.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector('#scanner'),
+          constraints: {
+            width: 640,
+            height: 480
+          }
+        },
+        decoder: {
+          readers: ["ean_reader"]
         }
-      },
-      decoder: {
-        readers: ["ean_reader"]
-      }
-    }, function(err) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      Quagga.start();
-    });
-
-    Quagga.onDetected(function(result) {
-      try {
-        const isbn = result.codeResult.code;
-        if(isbn.length === 10 || isbn.length === 13) {
-          fetchBookDetails(isbn);
-          Quagga.stop(); 
-        } else {
-          console.log('Scanned barcode is not a valid ISBN:', isbn);
+      }, function(err) {
+        if (err) {
+          console.log(err);
+          return;
         }
-      } catch (error) {
-        console.error('Error during detection:', error);
-      }
-    });
-  }
+        Quagga.start();
+      });
+
+      Quagga.onDetected(function(result) {
+        try {
+          const isbn = result.codeResult.code;
+          if(isbn.length === 10 || isbn.length === 13) {
+            fetchBookDetails(isbn);
+            Quagga.stop(); 
+          } else {
+            console.log('Scanned barcode is not a valid ISBN:', isbn);
+          }
+        } catch (error) {
+          console.error('Error during detection:', error);
+        }
+      });
+    }
+  });
 </script>

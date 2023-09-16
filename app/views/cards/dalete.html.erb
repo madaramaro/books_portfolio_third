@@ -1,0 +1,12 @@
+<h2>本当に以下のカードを削除しますか？</h2>
+<div class="bg-white shadow-lg rounded-lg mb-6 p-4">
+  <h3><%= @card.book.title %></h3>
+  <p>投稿者: <%= @card.user ? @card.user.name : "不明" %></p>
+  <p>著者: <%= @card.book.author %></p>
+  <p>出版社: <%= @card.book.publisher %></p>
+  <p>出版日: <%= @card.book.published_date %></p>
+  <p>投稿日: <%= @card.created_at.strftime("%Y-%m-%d %H:%M:%S") %></p>
+
+ <%= link_to 'はい', card_path(@card), method: :delete, class: 'btn btn-danger' %>
+<%= link_to 'キャンセル', cards_path, class: 'btn btn-secondary' %>
+</div>
