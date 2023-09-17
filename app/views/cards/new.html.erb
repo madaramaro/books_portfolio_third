@@ -12,7 +12,8 @@
 
     <div>
       <%= f.label :text, "追加のテキスト", class: "block font-semibold mb-2" %>
-      <%= f.text_area :text, class: "w-full p-2 border rounded" %>
+      <%= f.text_area :text, class: "w-full p-2 border rounded", maxlength: 140, data: { counter_element: "text-counter" } %>
+      <div id="text-counter" class="text-right mt-1 text-sm text-gray-500">0/140</div>
     </div>
 
     <div class="mt-4">
@@ -20,3 +21,25 @@
     </div>
   </div>
 <% end %>
+
+<script>
+document.addEventListener("turbo:load", function() {
+  console.log("Turbo loaded!");
+// document.addEventListener("DOMContentLoaded", function() {
+  const textarea = document.querySelector('textarea[data-counter-element]');
+  const counterId = textarea && textarea.getAttribute('data-counter-element');
+  const counter = counterId && document.getElementById(counterId);
+
+  if (textarea && counter) {
+    // 初期カウントを設定
+    counter.textContent = `${textarea.value.length}/140`;
+
+    textarea.addEventListener("input", function() {
+      const length = textarea.value.length;
+      counter.textContent = `${length}/140`;
+    });
+  }
+});
+</script>
+
+

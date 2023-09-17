@@ -35,6 +35,16 @@
       <%= f.file_field :profile_image, class: "appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %>
     </div>
 
+    <!-- SNS Selection and Link Input -->
+    <div class="rounded-md shadow-sm -space-y-px mt-4">
+      <%= f.label :sns_type, "Select SNS", class: "sr-only" %>
+      <%= f.select :sns_type, options_for_select(['Select an SNS', 'Facebook', 'Twitter', 'Instagram', 'LinkedIn']), {}, class: "appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mb-2" %>
+
+      <%= f.label :sns_username, "SNS Username or Page ID", class: "sr-only" %>
+      <%= f.text_field :sns_username, placeholder: "Username or Page ID", class: "appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %>
+    </div>
+
+
     <!-- Password input -->
     <div class="rounded-md shadow-sm -space-y-px">
       <%= f.label :password, class: "sr-only" %>

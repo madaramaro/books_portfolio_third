@@ -8,6 +8,13 @@
   <div id="scanner" style="width: 300px; height: 210px;"></div>
 </div>
 
+<h1 class="text-2xl font-bold my-4 border-b pb-2 text-center">ISBN手入力</h1> 
+
+<div class="flex justify-center my-4">
+  <input type="text" id="isbn-input" class="border p-2 rounded" placeholder="ISBNを入力">
+  <button onclick="fetchBookDetailsByInput();" class='py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 ml-2'>検索</button>
+</div>
+
 <h1 class="text-2xl font-bold my-4 border-b pb-2 text-center">スキャンした書籍</h1>
 
 <div class="mx-auto max-w-screen-md p-4">
@@ -37,72 +44,82 @@
 <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-
     function setBookDetailsToForm(details) {
-      document.getElementById('book-title-input').value = details.title || '';
-      document.getElementById('book-author-input').value = details.authors ? details.authors.join(', ') : '';
-      document.getElementById('book-publisher-input').value = details.publisher || '';
-      document.getElementById('book-published-date-input').value = details.publishedDate || '';
-      if (details.imageLinks && details.imageLinks.thumbnail) {
-        const bookCover = document.getElementById('book-cover');
-        const imageUrlInput = document.getElementById('book-image-url-input');
-        bookCover.src = details.imageLinks.thumbnail;
-        imageUrlInput.value = details.imageLinks.thumbnail;
-        bookCover.style.display = 'block';
-      }
+        document.getElementById('book-title-input').value = details.title || '';
+        document.getElementById('book-author-input').value = details.authors ? details.authors.join(', ') : '';
+        document.getElementById('book-publisher-input').value = details.publisher || '';
+        document.getElementById('book-published-date-input').value = details.publishedDate || '';
+        if (details.imageLinks && details.imageLinks.thumbnail) {
+            const bookCover = document.getElementById('book-cover');
+            const imageUrlInput = document.getElementById('book-image-url-input');
+            bookCover.src = details.imageLinks.thumbnail;
+            imageUrlInput.value = details.imageLinks.thumbnail;
+            bookCover.style.display = 'block';
+        }
     }
 
     function fetchBookDetails(isbn) {
-      const API_ENDPOINT = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
-      fetch(API_ENDPOINT)
-      .then(response => response.json())
-      .then(data => {
-        if (data.totalItems > 0) {
-          const bookDetails = data.items[0].volumeInfo;
-          setBookDetailsToForm(bookDetails);
-        } 
-      })
-      .catch(error => {
-        console.error('Error fetching book details:', error);
-      });
+        const API_ENDPOINT = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
+        fetch(API_ENDPOINT)
+        .then(response => response.json())
+        .then(data => {
+            if (data.totalItems > 0) {
+                const bookDetails = data.items[0].volumeInfo;
+                setBookDetailsToForm(bookDetails);
+            } 
+        })
+        .catch(error => {
+            console.error('Error fetching book details:', error);
+        });
     }
 
-    if (document.querySelector('#scanner')) {
-      Quagga.init({
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: document.querySelector('#scanner'),
-          constraints: {
-            width: 640,
-            height: 480
-          }
-        },
-        decoder: {
-          readers: ["ean_reader"]
-        }
-      }, function(err) {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        Quagga.start();
-      });
-
-      Quagga.onDetected(function(result) {
-        try {
-          const isbn = result.codeResult.code;
-          if(isbn.length === 10 || isbn.length === 13) {
+    // グローバルスコープにこの関数を移動
+    function fetchBookDetailsByInput() {
+        const isbnInput = document.getElementById('isbn-input');
+        const isbn = isbnInput.value;
+        if(isbn.length === 10 || isbn.length === 13) {
             fetchBookDetails(isbn);
-            Quagga.stop(); 
-          } else {
-            console.log('Scanned barcode is not a valid ISBN:', isbn);
-          }
-        } catch (error) {
-          console.error('Error during detection:', error);
+        } else {
+            alert('入力されたバーコードは有効なISBNではありません。');
         }
-      });
     }
-  });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        if (document.querySelector('#scanner')) {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#scanner'),
+                    constraints: {
+                        width: 640,
+                        height: 480
+                    }
+                },
+                decoder: {
+                    readers: ["ean_reader"]
+                }
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                Quagga.start();
+            });
+
+            Quagga.onDetected(function(result) {
+                try {
+                    const isbn = result.codeResult.code;
+                    if(isbn.length === 10 || isbn.length === 13) {
+                        fetchBookDetails(isbn);
+                        Quagga.stop(); 
+                    } else {
+                        console.log('Scanned barcode is not a valid ISBN:', isbn);
+                    }
+                } catch (error) {
+                    console.error('Error during detection:', error);
+                }
+            });
+        }
+    });
 </script>
