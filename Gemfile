@@ -79,3 +79,5 @@ gem 'devise'
 gem 'carrierwave', '~> 2.0'
 gem 'mini_magick' # 画像の処理のため
 
+# Gemfile
+gem "ruby-openai"
