@@ -1,9 +1,44 @@
-<h1 class="text-2xl font-bold my-4 border-b pb-2">カード一覧</h1>
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-2xl font-bold border-b pb-2">Cards</h1>
+
+<% if user_signed_in? %>
+    <%= form_with url: cards_path, method: :get, local: true, class: 'flex' do |form| %>
+      <%= form.select :sort, [['全投稿表示', 'all'], ['自分の投稿', 'own'], ['Watchのみ表示', 'watch']] %>
+      <%= form.submit '絞り込む', class: 'ml-2 px-3 py-1 bg-blue-300 text-white rounded hover:bg-blue-400' %>
+    <% end %>
+  <% end %>
+</div>
 
 <div class="mx-auto max-w-screen-md p-4">
   <% @cards.each do |card| %>
-    <div class="bg-white shadow-lg rounded-lg mb-6 p-4">
-      <div class="flex flex-col space-y-2">
+    <div class="bg-white shadow-lg rounded-lg mb-6 p-4 relative">
+      <div class="absolute top-2 right-2 z-10 flex space-x-2">
+        <% if current_user == card.user %>
+          <% if !current_user.favorites.exists?(card_id: card.id) %>
+            <%= button_to favorites_path(card_id: card.id), class: 'rounded-full p-2 m-1 bg-green-300 hover:bg-green-400 w-20 h-10' do %>
+              Like
+            <% end %>
+          <% else %>
+            <%= button_to favorite_path(current_user.favorites.find_by(card_id: card.id)), method: :delete, class: 'rounded-full p-2 m-1 bg-red-300 hover:bg-red-400 w-20 h-10' do %>
+              Unlike
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <% if current_user && current_user != card.user %>
+          <% if current_user.watching?(card) %>
+            <%= button_to watchlist_path(current_user.watchlists.find_by(card: card)), method: :delete, class: 'p-2 m-1 bg-yellow-300 hover:bg-yellow-400 w-20 h-10' do %>
+              Unwatch
+            <% end %>
+          <% else %>
+            <%= button_to watchlists_path(card_id: card.id), class: 'p-2 m-1 bg-blue-300 hover:bg-blue-400 w-20 h-10' do %>
+              Watch
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="flex flex-col space-y-10 pt-10">
         <div class="flex items-center space-x-4">
           <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-20 h-28 object-cover rounded-lg">
           <div>
@@ -17,15 +52,12 @@
         <div>
           <p class="mt-1 text-gray-500 text-sm"><strong>投稿日:</strong> <%= card.created_at.strftime("%Y-%m-%d %H:%M:%S") %></p>
         </div>
-        <div class="mt-2">
-          <%= link_to '詳細', card_path(card), class: 'btn btn-primary' %>
-          <% if current_user == card.user %> 
-            <%= link_to '編集', edit_card_path(card), class: 'btn btn-secondary ml-2' %> 
-          <%= form_for card, method: :delete, html: { class: 'inline', onsubmit: "return confirm('本当に削除しますか？');" } do |f| %>
-          <%= f.submit '削除', class: 'btn btn-danger ml-2' %>
-          <% end %>
-
-
+        
+        <div class="mt-2 flex space-x-2">
+          <%= link_to '詳細', card_path(card), class: 'flex-1 px-4 py-2 bg-teal-300 text-white rounded hover:bg-teal-400 text-center' %>
+          <% if current_user == card.user %>
+            <%= link_to '編集', edit_card_path(card), class: 'flex-1 px-4 py-2 bg-blue-300 text-white rounded hover:bg-blue-400 text-center' %> 
+            <%= button_to '削除', card, method: :delete, class: 'flex-1 px-4 py-2 bg-red-300 text-white rounded hover:bg-red-400 text-center', data: { confirm: '本当に削除しますか？' } %>
           <% end %>
         </div>
       </div>

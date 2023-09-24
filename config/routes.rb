@@ -9,9 +9,14 @@ Rails.application.routes.draw do
   end
   
   resources :cards
-  
+
   get 'chats', to: 'chats#index'
   get 'search', to: 'chats#search'
+
+  resources :favorites, only: [:index, :create, :destroy]
+
+  resources :watchlists, only: [:create, :destroy]
+
 end
 
   

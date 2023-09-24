@@ -10,7 +10,8 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%# <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %> 
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+
   </head>
 
   <body>
@@ -30,29 +31,40 @@
     <%= link_to 'List', cards_path, class: 'btn btn-ghost text-xs' %>
     
     <div class="dropdown dropdown-end">
-      <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-        <div class="w-6 rounded-full">
-        <% if current_user && current_user.profile_image.present? %>
-          <%= image_tag(current_user.profile_image.url, alt: "Profile Image", class: "rounded-full w-6 h-6") %>
-        <% else %>
-          <%= image_tag("/images/stock/photo-1534528741775-53994a69daeb.jpg", alt: "Default Profile Image", class: "rounded-full w-6 h-6") %>
+  <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+    <div class="w-6 rounded-full">
+      <% if current_user && current_user.profile_image.present? %>
+        <%= image_tag(current_user.profile_image.url, alt: "Profile Image", class: "rounded-full w-6 h-6") %>
+      <% else %>
+        <%= image_tag("/images/stock/photo-1534528741775-53994a69daeb.jpg", alt: "Default Profile Image", class: "rounded-full w-6 h-6") %>
+      <% end %>
+    </div>
+  </label>
+  <ul tabindex="0" class="mt-2 z-[1] p-1 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-44">
+    <% if current_user %>
+      <li class="text-xs">
+        <%= link_to user_path(current_user), class: "justify-between" do %>
+          Profile
+          <span class="badge">New</span>
         <% end %>
-        </div>
-      </label>
-      <ul tabindex="0" class="mt-2 z-[1] p-1 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-44">
-        <% if current_user %>
-          <li class="text-xs">
-            <%= link_to user_path(current_user), class: "justify-between" do %>
-              Profile
-              <span class="badge">New</span>
-            <% end %>
-          </li>
+      </li>
+      <li class="text-xs">
+        <%= link_to "Setting", edit_user_registration_path %>
+      </li>
+      <li class="text-xs">
+        <%= form_with url: destroy_user_session_path, method: :delete do %>
+          <%= submit_tag "Logout" %>
         <% end %>
-        <li class="text-xs">
-          <%= link_to "Setting", edit_user_registration_path %>
-        </li>
-        <li class="text-xs">
-          <%= link_to "Logout", destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %>
+      </li>
+    <% else %>
+      <li class="text-xs">
+        <%= link_to "Log in", new_user_session_path %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+
         </li>
       </ul>
     </div>

@@ -20,4 +20,23 @@ class User < ApplicationRecord
 
     "#{base_url}#{sns_username}" if base_url
   end
+
+  has_many :favorites, dependent: :destroy
+  # もしFavoriteモデルを介してCardモデルと関連付けているならば
+  has_many :cards, through: :favorites
+
+  has_many :watchlists
+  has_many :watched_cards, through: :watchlists, source: :card
+
+  def watch(card)
+    watched_cards << card unless watching?(card)
+  end
+
+  def unwatch(card)
+    watched_cards.destroy(card) if watching?(card)
+  end
+
+  def watching?(card)
+    watched_cards.include?(card)
+  end
 end

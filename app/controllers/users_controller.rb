@@ -1,10 +1,13 @@
 class UsersController < ApplicationController
-
   def show
-    @user = User.find(params[:id])
+    @user = User.find_by(id: params[:id])
+    unless @user
+      flash[:alert] = "User not found"
+      redirect_to root_path and return
+    end
     @sns_url = generate_sns_url(@user.sns_type, @user.sns_username)
   end
-
+  
   def update
     @user = User.find(params[:id])
     if @user.update(user_params)

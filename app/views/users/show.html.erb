@@ -33,7 +33,26 @@
           </p>
         </div>
       <% end %>
-      
-    </div>
-  </div>
+
+   <!-- MyFavoriteList Link -->
+<div class="mt-4">
+  <strong class="text-xl font-semibold text-black"><%= @user.name %>'s Favorite</strong>
+  <p class="mt-2">
+    <%= button_to 'View Favorites', '#', method: :get, id: "goToFavoritesButton", class: 'text-blue-600 hover:underline', data: { turbolinks: false } %>
+  </p>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let button = document.getElementById('goToFavoritesButton');
+
+    if(button) {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = "<%= favorites_path %>";
+        });
+    }
+});
+</script>
+
+

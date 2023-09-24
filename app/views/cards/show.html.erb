@@ -68,13 +68,21 @@
           </p>
         </div>
       <% end %>
-        </div>
+
+      <!-- MyFavoriteList Link -->
+        <div class="mt-4">
+        <strong class="text-xl font-semibold text-black"><%= @user.name %>'s Favorite</strong>
+        <p class="mt-2">
+          <%= link_to 'View Favorites', favorites_path(user_id: @user.id), class: 'text-blue-600 hover:underline' %>
+        </p>
+      </div>
+
       </div>
     </div>
   </div>
 
 </div>
-
+</div>
 
 <div class="mt-4 text-center flex justify-center space-x-2">
   <%= link_to '戻る', cards_path, class: 'py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700' %>
