@@ -25,7 +25,7 @@ class User < ApplicationRecord
   # もしFavoriteモデルを介してCardモデルと関連付けているならば
   has_many :cards, through: :favorites
 
-  has_many :watchlists
+  has_many :watchlists, dependent: :destroy
   has_many :watched_cards, through: :watchlists, source: :card
 
   def watch(card)

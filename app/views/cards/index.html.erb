@@ -1,13 +1,35 @@
-<div class="flex justify-between items-center mb-4">
-  <h1 class="text-2xl font-bold border-b pb-2">Cards</h1>
-
-<% if user_signed_in? %>
-    <%= form_with url: cards_path, method: :get, local: true, class: 'flex' do |form| %>
-      <%= form.select :sort, [['全投稿表示', 'all'], ['自分の投稿', 'own'], ['Watchのみ表示', 'watch']] %>
-      <%= form.submit '絞り込む', class: 'ml-2 px-3 py-1 bg-blue-300 text-white rounded hover:bg-blue-400' %>
-    <% end %>
+<div class="flex flex-col md:flex-row md:justify-between items-start md:items-center mb-4 md:max-w-[390px] mx-auto">
+  <h1 class="text-xl font-bold border-b pb-2">Cards</h1>
+  <% if user_signed_in? %>
+    <div class="text-xs md:text-sm mt-2 md:mt-0">
+      <p>My favorite count: <%= current_user.favorites.count %></p>
+      <p>My watch list count: <%= current_user.watchlists.count %></p>
+    </div>
   <% end %>
 </div>
+
+<% if user_signed_in? %>
+  <div class="md:max-w-[390px] mx-auto">
+    <%= form_with url: cards_path, method: :get, local: true, class: 'flex', id: 'sort_form' do |form| %>
+  <%= form.select :sort, [['Select a filter', nil], ['all', 'all'], ['my list', 'own'], ['watch list', 'watch']], {}, { id: 'sort_dropdown' } %>
+<% end %>
+
+  </div>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const dropdown = document.getElementById('sort_dropdown');
+  if (dropdown) {
+    dropdown.addEventListener('change', function() {
+      const form = document.getElementById('sort_form');
+      if (form) {
+        form.submit();
+      }
+    });
+  }
+});
+</script> 
 
 <div class="mx-auto max-w-screen-md p-4">
   <% @cards.each do |card| %>
@@ -16,11 +38,11 @@
         <% if current_user == card.user %>
           <% if !current_user.favorites.exists?(card_id: card.id) %>
             <%= button_to favorites_path(card_id: card.id), class: 'rounded-full p-2 m-1 bg-green-300 hover:bg-green-400 w-20 h-10' do %>
-              Like
+              Unlike
             <% end %>
           <% else %>
             <%= button_to favorite_path(current_user.favorites.find_by(card_id: card.id)), method: :delete, class: 'rounded-full p-2 m-1 bg-red-300 hover:bg-red-400 w-20 h-10' do %>
-              Unlike
+              Like
             <% end %>
           <% end %>
         <% end %>
@@ -28,11 +50,11 @@
         <% if current_user && current_user != card.user %>
           <% if current_user.watching?(card) %>
             <%= button_to watchlist_path(current_user.watchlists.find_by(card: card)), method: :delete, class: 'p-2 m-1 bg-yellow-300 hover:bg-yellow-400 w-20 h-10' do %>
-              Unwatch
+              Watch
             <% end %>
           <% else %>
             <%= button_to watchlists_path(card_id: card.id), class: 'p-2 m-1 bg-blue-300 hover:bg-blue-400 w-20 h-10' do %>
-              Watch
+              Unwatch
             <% end %>
           <% end %>
         <% end %>
@@ -64,3 +86,18 @@
     </div>
   <% end %>
 </div>
+
+<script>
+// ページを離れる前にスクロール位置をセッションストレージに保存
+window.addEventListener('beforeunload', function () {
+  sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+});
+
+// ページが読み込まれたときにスクロール位置をセッションストレージから読み出し
+window.addEventListener('DOMContentLoaded', (event) => {
+  const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+  if (savedScrollPosition) {
+    window.scrollTo(0, parseInt(savedScrollPosition));
+  }
+});
+</script>

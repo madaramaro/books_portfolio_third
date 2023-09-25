@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_23_212234) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_25_213116) do
   create_table "books", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.string "author"
@@ -75,5 +75,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_23_212234) do
   add_foreign_key "favorites", "cards"
   add_foreign_key "favorites", "users"
   add_foreign_key "watchlists", "cards"
-  add_foreign_key "watchlists", "users"
+  add_foreign_key "watchlists", "users", on_delete: :cascade
 end

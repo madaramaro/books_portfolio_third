@@ -16,9 +16,10 @@ class CardsController < ApplicationController
       current_user.cards.order(created_at: :desc)
     when 'watch'
       Card.joins(:watchlists).where(watchlists: { user_id: current_user.id }).order(created_at: :desc)
-    else # 'all' or nil
+    when nil, 'all' # nil or 'all'
       Card.all.order(created_at: :desc)
     end
+    
     
     if params[:search].present?
       @cards = @cards.joins(:book).where('books.title LIKE ? OR books.author LIKE ? OR cards.text LIKE ?', "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")

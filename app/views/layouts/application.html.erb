@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Myapp</title>
+    <title>Oshibon</title>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
@@ -11,12 +11,12 @@
     <%= javascript_importmap_tags %>
     <%# <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
-
+    
   </head>
 
   <body>
   <div class="navbar bg-base-100 px-2 py-1 flex justify-between items-center">
-  <%= link_to 'OshiBon', chats_path, class: "btn btn-ghost normal-case text-xl font-bold ml-2" %>
+  <%= link_to 'OshiBon', chats_path, class: "btn btn-ghost normal-case text-2xl font-bold ml-2" %>
 
   <div class="flex items-center gap-1">
     <div class="flex-none gap-1 mx-1">
@@ -80,7 +80,27 @@
             <p>Copyright © 2023 - All right reserved by Oshibon Industries Ltd</p>
           </aside>
         </footer>
+  <button id="scrollTopBtn" class="fixed bottom-4 right-4 bg-red-200 first-letter: text-white p-2 rounded-full transition-opacity duration-500 ease-in-out shadow-lg style="display:none; opacity: 0;" onclick="scrollToTop()">↑</button>
+  <script>
+  let scrollTopBtn = document.getElementById("scrollTopBtn");
 
+  window.onscroll = function() {scrollFunction()};
+
+  function scrollFunction() {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 400) {
+      scrollTopBtn.style.display = "block"; // ボタンを表示
+      setTimeout(() => { scrollTopBtn.style.opacity = "1"; }, 50); // 少し遅延してからopacityを変更
+    } else {
+      scrollTopBtn.style.opacity = "0"; // opacityを0に
+      setTimeout(() => { scrollTopBtn.style.display = "none"; }, 500); // opacityの変化後にdisplayをnoneに
+    }
+  }
+
+  function scrollToTop() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+</script>
 
   </body>
 </html>
