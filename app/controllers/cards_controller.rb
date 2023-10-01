@@ -26,16 +26,17 @@ class CardsController < ApplicationController
   end
 
   def create
+    @book = Book.find(params[:book_id]) # または別の方法で @book をセット
     @card = @book.cards.build(card_params)
     @card.user = current_user
-
+  
     if @card.save
-      redirect_to cards_path
+      redirect_to cards_path, notice: 'Card was successfully created.'
     else
       render :new
     end
   end
-
+  
   def show
     @user = @card.user
     if @user.nil?
@@ -63,6 +64,7 @@ class CardsController < ApplicationController
   
 
   def destroy
+    @card.list_cards.destroy_all
     @card.destroy
     redirect_to cards_path, notice: 'Card was successfully deleted.'
   end
@@ -82,7 +84,7 @@ class CardsController < ApplicationController
     end
   end
   def card_params
-    params.require(:card).permit(:text, book_attributes: [:title, :author, :publisher, :published_date, :image_url])
+    params.require(:card).permit(:text, book_attributes: [:title, :author, :publisher, :published_date, :image_url,:image])
   end
   
 end

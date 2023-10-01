@@ -13,7 +13,11 @@
         <div class="flex items-center space-x-4">
           <%= check_box_tag 'list[card_ids][]', card.id, false, class: 'form-checkbox h-6 w-6 text-blue-500' %>
           <div class="flex items-center space-x-4">
-            <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-25 h-35 object-cover rounded-lg">
+           <% if card.book.image.attached? %>
+          <%= image_tag card.book.image, alt: "Book Cover", class: "w-[100px] h-[175px] object-cover rounded-lg mt-4" %>
+          <% else %>
+            <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-25 h-35 object-cover rounded-lg mt-4">
+          <% end %>
             <div>
               <h2 class="text-lg font-semibold mb-1"><%= card.book.title %></h2>
               <p><strong>著者:</strong> <%= card.book.author %></p>

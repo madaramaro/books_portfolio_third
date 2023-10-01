@@ -32,7 +32,13 @@ function goBack() {
         <!-- カードの内容 -->
         <div class="overflow-y-auto">
           <div class="flex flex-col items-center my-4">
-            <img src="<%= favorite.card.book.image_url %>" alt="Book Cover" class="max-w-[200px] mb-4 rounded-lg shadow-md">
+          <% if favorite.card.book.image.attached? %>
+          <%= image_tag favorite.card.book.image, alt: "Book Cover", class: "w-[100px] h-[175px] object-cover rounded-lg mt-4" %>
+          <% else %>
+            <img src="<%= favorite.card.book.image_url %>" alt="Book Cover" class="w-25 h-35 object-cover rounded-lg mt-4">
+          <% end %>
+
+
             <div class="text-left w-full">
               <% ['書籍名', '著者', '出版社', '出版日'].zip([favorite.card.book.title, favorite.card.book.author, favorite.card.book.publisher, favorite.card.book.published_date]).each do |label, value| %>
                 <div class="border-b border-black pb-1 mb-2">

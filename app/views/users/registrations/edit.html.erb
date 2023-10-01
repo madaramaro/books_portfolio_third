@@ -70,6 +70,17 @@
 
 <div class="mt-8 text-center">
   <h3 class="text-xl font-bold mb-4">Cancel my account</h3>
-  <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: "bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:ring focus:ring-red-200 focus:ring-opacity-50" %>
+  <%= button_to "Cancel my account", registration_path(resource_name), id: "cancel-account-button", method: :delete, class: "bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:ring focus:ring-red-200 focus:ring-opacity-50" %>
+      <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const cancelButton = document.getElementById('cancel-account-button');
+
+      cancelButton.addEventListener('click', function(event) {
+        if (!window.confirm('本当に削除しますか?')) {
+          event.preventDefault();
+        }
+      });
+    });
+      </script>
   <%= link_to "Back", :back, class: "mt-4 block text-blue-600 hover:underline" %>
 </div>

@@ -5,7 +5,12 @@
     <!-- 表の内容 -->
     <div class="overflow-y-auto">
       <div class="flex flex-col items-center my-4">
-        <img src="<%= @card.book.image_url %>" alt="Book Cover" class="max-w-[200px] mb-4 rounded-lg shadow-md">
+       <% if @card.book.image.attached? %>
+          <%= image_tag @card.book.image, alt: "Book Cover", class: "w-[100px] h-[175px] object-cover rounded-lg mt-4" %>
+          <% else %>
+            <img src="<%= @card.book.image_url %>" alt="Book Cover" class="w-25 h-35 object-cover rounded-lg mt-4">
+          <% end %>
+
         <div class="text-left w-full">
           <div class="border-b border-black pb-1 mb-2">
             <strong class="text-xl font-semibold text-black">書籍名:</strong> <%= @card.book.title %>

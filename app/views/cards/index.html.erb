@@ -82,7 +82,11 @@ document.addEventListener('DOMContentLoaded', function() {
    
       <div class="flex flex-col space-y-10 pt-10">
         <div class="flex items-center space-x-4 space-y-4">
-          <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-25 h-35 object-cover rounded-lg mt-4">
+          <% if card.book.image.attached? %>
+          <%= image_tag card.book.image, alt: "Book Cover", class: "w-[100px] h-[175px] object-cover rounded-lg mt-4" %>
+          <% else %>
+            <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-25 h-35 object-cover rounded-lg mt-4">
+          <% end %>
 
           <div>
             <h2 class="text-xl font-semibold mb-2"><%= card.book.title %></h2>
@@ -113,7 +117,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
           <% if current_user == card.user %>
           <%= link_to '編集', edit_book_card_path(card.book, card), class: 'flex-1 px-4 py-2 bg-blue-300 text-white rounded hover:bg-blue-400 text-center' %>
-          <%= button_to '削除', [card.book, card], method: :delete, class: 'flex-1 px-4 py-2 bg-red-300 text-white rounded hover:bg-red-400 text-center', data: { confirm: '本当に削除しますか？' } %>    
+          <%= button_to '削除', [card.book, card], method: :delete, id: "delete-button", class: 'flex-1 px-4 py-2 bg-red-300 text-white rounded hover:bg-red-400 text-center' %>
+          <script>
+          document.addEventListener('DOMContentLoaded', function() {
+          const deleteButton = document.getElementById('delete-button');
+
+          deleteButton.addEventListener('click', function(event) {
+            if (!window.confirm('本当に削除しますか？')) {
+              event.preventDefault();
+            }
+            });
+          });
+          </script>
 
           <% end %>
         </div>
