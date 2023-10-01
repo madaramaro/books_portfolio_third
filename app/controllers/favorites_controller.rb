@@ -2,11 +2,10 @@ class FavoritesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    user_id = params[:user_id] || current_user.id
-  @user = User.find_by(id: user_id)
-  @favorites = @user&.favorites || []
+    @user = User.find_by(id: params[:user_id]) || current_user
+    @favorites = @user.favorites
+    @other_user = @favorites.first&.user || @user
   end
-  
   
   def create
     favorite = current_user.favorites.build(card_id: params[:card_id]) # 修正した部分

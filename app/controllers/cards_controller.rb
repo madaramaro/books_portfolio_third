@@ -3,28 +3,24 @@ class CardsController < ApplicationController
   before_action :set_card, only: [:show, :edit, :update, :destroy]
   before_action :set_book, only: [:new, :create, :edit]
   before_action :check_owner, only: [:edit, :update, :destroy]
-
+  
   def index
-    if params[:search].present?
-      @cards = Card.joins(:book).where('books.title LIKE ? OR books.author LIKE ? OR cards.text LIKE ?', "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%").order(created_at: :desc)
+    case params[:sort]
+    when 'own'
+      @cards = current_user.own_cards.order(created_at: :desc)
+    when 'watch'
+      @cards = Card.joins(:watchlists).where(watchlists: { user_id: current_user.id }).order(created_at: :desc)
+    when 'favorite'
+      @cards = Card.joins(:favorites).where(favorites: { user_id: current_user.id }).order(created_at: :desc)
     else
       @cards = Card.all.order(created_at: :desc)
     end
-
-    @cards = case params[:sort]
-    when 'own'
-      current_user.cards.order(created_at: :desc)
-    when 'watch'
-      Card.joins(:watchlists).where(watchlists: { user_id: current_user.id }).order(created_at: :desc)
-    when nil, 'all' # nil or 'all'
-      Card.all.order(created_at: :desc)
-    end
-    
-    
+  
     if params[:search].present?
       @cards = @cards.joins(:book).where('books.title LIKE ? OR books.author LIKE ? OR cards.text LIKE ?', "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
     end
   end
+  
   def new
     @card = @book.cards.build
   end
@@ -42,20 +38,29 @@ class CardsController < ApplicationController
 
   def show
     @user = @card.user
-    @sns_url = generate_sns_url(@user.sns_type, @user.sns_username)
+    if @user.nil?
+      redirect_to cards_path, alert: 'User does not exist.'
+    else
+      @sns_url = generate_sns_url(@user.sns_type, @user.sns_username) if @user.sns_type.present? && @user.sns_username.present?
+      @total_likes = Like.where(card_id: @user.cards.pluck(:id)).count
+    end
   end
-
+  
   def edit
     # 編集権限チェックは before_action で行う
+    puts "@book object: #{@book.inspect}" # @bookオブジェクトのデバッグ出力
+    puts "Title: #{@book.title}" # title属性のデバッグ出力
+    puts "Author: #{@book.author}"
   end
   
   def update
     if @card.update(card_params)
-      redirect_to card_path(@card), notice: 'カードが更新されました'
+      redirect_to book_card_path(@card.book, @card), notice: 'カードが更新されました'
     else
       render :edit
     end
   end
+  
 
   def destroy
     @card.destroy
@@ -76,9 +81,8 @@ class CardsController < ApplicationController
       redirect_to cards_path, alert: "編集権限がありません"
     end
   end
-
   def card_params
-    params.require(:card).permit(:text)
+    params.require(:card).permit(:text, book_attributes: [:title, :author, :publisher, :published_date, :image_url])
   end
   
 end

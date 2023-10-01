@@ -1,6 +1,7 @@
 class Book < ApplicationRecord
   has_many :cards
-
+  has_one_attached :image
+  
   def self.fetch_book_details(isbn)
     cached_data = Rails.cache.fetch("book_#{isbn}", expires_in: 12.hours) do
       # APIからのデータ取得処理

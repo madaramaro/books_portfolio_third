@@ -21,6 +21,10 @@
               <%= form.submit "検索", class: "w-full px-6 py-3 text-lg text-white border-0 rounded-md bg-blue-600 focus:ring-blue-700 focus:ring focus:ring-opacity-30" %>
             </div>
           <% end %>
+          
+          <div class="mt-4 text-center">
+            <%= link_to '検索履歴を表示', search_histories_path, class: 'text-blue-500 underline' %>
+          </div>
         </div>
       </div>
     </div>

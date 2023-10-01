@@ -10,6 +10,23 @@ class ChatsController < ApplicationController
   def index; end
 
   def search
+    if user_signed_in?
+      if @aicard
+        current_user.search_histories.create(
+          query: params[:text],
+          title: @aicard.title,
+          isbn: @aicard.isbn,
+          description: @aicard.description,
+          image_url: @aicard.image_url,
+          author: @aicard.author,
+          publisher: @aicard.publisher,
+          published_date: @aicard.published_date
+        )
+      else
+        current_user.search_histories.create(query: params[:text])
+      end
+    end
+
     @client = OpenAI::Client.new(access_token: @api_key)
 
     additional_info = "必ず存在するもので、上記条件にあった書籍を一冊選び、概要:は300文字以内で回答してください。「」不要。必ず書籍は書籍:、概要は概要:の後に表示するようにしてください。"
@@ -57,16 +74,32 @@ class ChatsController < ApplicationController
           )
           Rails.logger.info("@aicard: #{@aicard.inspect}")
 
-        else
-          @chats = "該当する書籍名の書籍が見つかりませんでした。"
-          Rails.logger.info("@chats: #{@chats}")
-        end
-      else
-        @chats = "書籍名が見つかりませんでした。"
-        Rails.logger.info("@chats: #{@chats}")
+       # @aicardが設定された場合に検索履歴を保存
+       if user_signed_in?
+        current_user.search_histories.create(
+          query: params[:text],
+          title: @aicard.title,
+          isbn: @aicard.isbn,
+          description: @aicard.description,
+          image_url: @aicard.image_url,
+          author: @aicard.author,
+          publisher: @aicard.publisher,
+          published_date: @aicard.published_date
+        )
       end
+    else
+      @chats = "該当する書籍名の書籍が見つかりませんでした。"
     end
+  else
+    @chats = "書籍名が見つかりませんでした。"
   end
+end
+
+# @aicardがnilの場合にqueryのみを保存する。
+if user_signed_in? && @aicard.nil?
+  current_user.search_histories.create(query: params[:text])
+end
+end 
 
   private
 

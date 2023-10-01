@@ -34,7 +34,12 @@
   <div class="card-face card-back absolute inset-0 p-4 bg-white shadow-2xl rounded-2xl border border-gray-300 transition-transform duration-700">
     <!-- 裏の内容 -->
     <div class="overflow-y-auto">
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-black mb-8"><%= @user.name %>'s Profile</h2>
+      <% if @user %>
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-black mb-8"><%= @user.name %>'s Profile</h2>
+    <%# ... other user-related information ... %>
+  <% else %>
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-black mb-8">User does not exist.</h2>
+  <% end %>
 
       <% if @user.errors.any? %>
         <div class="border border-red-500 p-4 rounded mb-4 bg-red-50">
@@ -46,12 +51,19 @@
         </div>
       <% end %>
 
-      <div class="flex flex-col items-center">
-        <% if @user.profile_image? %>
-          <div class="text-center mb-4">
-            <%= image_tag(@user.profile_image.url, alt: "Profile Image", class: "rounded-full w-24 h-24 mb-4 shadow-md") %>
+      <div class="flex items-center justify-center mb-4">
+          <% if @user.profile_image? %>
+            <div class="text-center">
+              <%= image_tag(@user.profile_image.url, alt: "Profile Image", class: "rounded-full w-24 h-24 shadow-md") %>
+            </div>
+          <% end %>
+          <div class="ml-4 bg-red-300 hover:bg-red-400 p-2 rounded flex items-center justify-center" style="min-width: 80px;">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span class="ml-2"><%= @total_likes %></span>
           </div>
-        <% end %>
+        </div>
 
         <div class="text-left w-full">
           <div class="border-b border-black pb-1 mb-2">
@@ -85,11 +97,10 @@
 </div>
 
 <div class="mt-4 text-center flex justify-center space-x-2">
-  <%= link_to '戻る', cards_path, class: 'py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700' %>
+  <%= link_to '戻る', book_cards_path(@card.book), class: 'py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700' %>
   
   <!-- 隠しテキストフィールド (URLが入力される) -->
-  <input type="text" value="<%= card_url(@card) %>" id="copyURL" style="position: absolute; left: -9999px;">
-  
+<input type="text" value="<%= book_card_url(@card.book, @card) %>" id="copyURL" style="position: absolute; left: -9999px;">
   <!-- コピーするボタン -->
   <button onclick="copyURLToClipboard()" class="py-2 px-4 bg-yellow-500 text-white rounded hover:bg-yellow-700">URLをコピー</button>
 </div>

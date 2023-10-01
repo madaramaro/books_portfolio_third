@@ -27,7 +27,10 @@ class User < ApplicationRecord
 
   has_many :watchlists, dependent: :destroy
   has_many :watched_cards, through: :watchlists, source: :card
-
+  has_many :likes, dependent: :destroy
+  has_many :search_histories, dependent: :destroy
+  has_many :lists
+  
   def watch(card)
     watched_cards << card unless watching?(card)
   end
@@ -39,4 +42,9 @@ class User < ApplicationRecord
   def watching?(card)
     watched_cards.include?(card)
   end
+
+  def own_cards
+    Card.where(user_id: id)
+  end
+
 end

@@ -80,27 +80,29 @@
             <p>Copyright © 2023 - All right reserved by Oshibon Industries Ltd</p>
           </aside>
         </footer>
-  <button id="scrollTopBtn" class="fixed bottom-4 right-4 bg-red-200 first-letter: text-white p-2 rounded-full transition-opacity duration-500 ease-in-out shadow-lg style="display:none; opacity: 0;" onclick="scrollToTop()">↑</button>
-  <script>
+ 
+<button id="scrollTopBtn" class="fixed bottom-8 right-8 bg-red-300 text-white p-2 rounded-full transition-opacity duration-500 ease-in-out shadow-lg" style="display: none; opacity: 0;" onclick="scrollToTop()">↑</button>
+
+<script>
   let scrollTopBtn = document.getElementById("scrollTopBtn");
 
-  window.onscroll = function() {scrollFunction()};
+  window.onscroll = function() { scrollFunction() };
 
   function scrollFunction() {
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 400) {
-      scrollTopBtn.style.display = "block"; // ボタンを表示
-      setTimeout(() => { scrollTopBtn.style.opacity = "1"; }, 50); // 少し遅延してからopacityを変更
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      scrollTopBtn.style.display = "block";
+      setTimeout(function() { scrollTopBtn.style.opacity = "1"; }, 50);
     } else {
-      scrollTopBtn.style.opacity = "0"; // opacityを0に
-      setTimeout(() => { scrollTopBtn.style.display = "none"; }, 500); // opacityの変化後にdisplayをnoneに
+      scrollTopBtn.style.opacity = "0";
+      setTimeout(function() { scrollTopBtn.style.display = "none"; }, 500); // 500 is the duration of the transition in milliseconds
     }
   }
 
   function scrollToTop() {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
 </script>
-
+  
   </body>
 </html>

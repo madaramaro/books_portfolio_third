@@ -1,0 +1,60 @@
+<div class="mx-auto w-[350px] mt-10 relative perspective hover:flip">
+  <h2 class="text-center text-3xl font-bold mb-8">Search History</h2>
+  <% @search_histories.each do |history| %>
+    <div class="relative perspective hover:flip mb-8">
+      <!-- Front of the Card -->
+      <div class="card-face card-front p-4 bg-white shadow-2xl rounded-2xl border border-gray-300 transition-transform duration-700 overflow-auto h-[650px] mb-6">
+        <!-- 表の内容 -->
+        <div class="overflow-y-auto h-full">
+          <div class="flex flex-col items-center my-4">
+            <% if history.image_url.present? %>
+              <img src="<%= history.image_url %>" alt="Book Cover" class="max-w-[200px] mb-4 rounded-lg shadow-md">
+            <% else %>
+              <p>No Image Available</p>
+            <% end %>
+            <div class="text-left w-full">
+              <% if history.title.present? %>
+                <div class="border-b border-black pb-1 mb-2">
+                  <strong class="text-xl font-semibold text-black">書籍名:</strong> <%= history.title %>
+                </div>
+                <div class="border-b border-black pb-1 mb-2">
+                  <strong class="text-xl font-semibold text-black">著者:</strong> <%= history.author %>
+                </div>
+                <div class="border-b border-black pb-1 mb-2">
+                  <strong class="text-xl font-semibold text-black">出版社:</strong> <%= history.publisher %>
+                </div>
+                <div class="border-b border-black pb-1 mb-2">
+                  <strong class="text-xl font-semibold text-black">出版日:</strong> <%= history.published_date %>
+                </div>
+              <% else %>
+                <p>書籍情報は利用できません</p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Back of the Card -->
+      <div class="card-face card-back absolute inset-0 p-4 bg-white shadow-2xl rounded-2xl border border-gray-300 transition-transform duration-700 overflow-auto h-[650px]">
+        <!-- 裏の内容 -->
+        <div class="overflow-y-auto h-full">
+          <h2 class="mt-6 text-center text-3xl font-extrabold text-black mb-8">書籍詳細</h2>
+          <div class="text-left w-full">
+            <% if history.description.present? %>
+              <div class="border-b border-black pb-1 mb-2">
+                <strong class="text-xl font-semibold text-black">質問:</strong>
+                <p class="mt-2 text-gray-800"><%= history.query %></p>
+              </div>
+              <div class="border-b border-black pb-1 mb-2">
+                <strong class="text-xl font-semibold text-black">概要:</strong>
+                <p class="mt-2 text-gray-800"><%= history.description %></p>
+              </div>
+            <% else %>
+              <p>書籍詳細は利用できません</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -6,6 +6,7 @@ class UsersController < ApplicationController
       redirect_to root_path and return
     end
     @sns_url = generate_sns_url(@user.sns_type, @user.sns_username)
+    @total_likes = @user.cards.sum { |card| card.likes.count }
   end
   
   def update

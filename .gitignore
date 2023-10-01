@@ -44,3 +44,6 @@ capybara-*.html
 .rbenv-vars
 
 /config/credentials/development.key
+
+# Ignore .env files
+.env

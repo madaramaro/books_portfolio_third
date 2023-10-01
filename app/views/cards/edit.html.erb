@@ -3,10 +3,19 @@
     <div class="flex flex-col items-center my-4">
       <img src="<%= @book.image_url %>" alt="Book Cover" class="max-w-[200px] mb-4 rounded-lg">
       <div>
-        <strong class="text-lg">書籍名:</strong> <%= @book.title %><br>
-        <strong class="text-lg">著者:</strong> <%= @book.author %><br>
-        <strong class="text-lg">出版社:</strong> <%= @book.publisher %><br>
-        <strong class="text-lg">出版日:</strong> <%= @book.published_date %><br>
+        <%= f.fields_for :book do |book_fields| %>
+          <div>
+            <%= book_fields.hidden_field :image_url, value: @book.image_url %>
+            <%= book_fields.label :title, "書籍名:", class: "block font-semibold" %>
+            <%= book_fields.text_field :title, value: @book.title, class: "w-full p-2 border rounded" %>
+            <%= book_fields.label :author, "著者:", class: "block font-semibold" %>
+            <%= book_fields.text_field :author, value: @book.author, class: "w-full p-2 border rounded" %>
+            <%= book_fields.label :publisher, "出版社:", class: "block font-semibold" %>
+            <%= book_fields.text_field :publisher, value: @book.publisher, class: "w-full p-2 border rounded" %>
+            <%= book_fields.label :published_date, "出版日:", class: "block font-semibold" %>
+            <%= book_fields.text_field :published_date, value: @book.published_date, class: "w-full p-2 border rounded" %>
+          </div>
+        <% end %>
       </div>
     </div>
 

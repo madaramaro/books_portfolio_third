@@ -10,12 +10,12 @@
 
 <% if user_signed_in? %>
   <div class="md:max-w-[390px] mx-auto">
-    <%= form_with url: cards_path, method: :get, local: true, class: 'flex', id: 'sort_form' do |form| %>
-  <%= form.select :sort, [['Select a filter', nil], ['all', 'all'], ['my list', 'own'], ['watch list', 'watch']], {}, { id: 'sort_dropdown' } %>
+  <%= form_with url: cards_path, method: :get, local: true, class: 'flex', id: 'sort_form' do |form| %>
+  <%= form.select :sort, [['Select a filter', nil], ['All', 'all'], ['My list', 'own'], ['Favorite', 'favorite'], ['Watch list', 'watch']], {}, { id: 'sort_dropdown' } %>
 <% end %>
-
   </div>
 <% end %>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -33,39 +33,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div class="mx-auto max-w-screen-md p-4">
   <% @cards.each do |card| %>
-    <div class="bg-white shadow-lg rounded-lg mb-6 p-4 relative">
-      <div class="absolute top-2 right-2 z-10 flex space-x-2">
-        <% if current_user == card.user %>
-          <% if !current_user.favorites.exists?(card_id: card.id) %>
-            <%= button_to favorites_path(card_id: card.id), class: 'rounded-full p-2 m-1 bg-green-300 hover:bg-green-400 w-20 h-10' do %>
-              Unlike
-            <% end %>
-          <% else %>
-            <%= button_to favorite_path(current_user.favorites.find_by(card_id: card.id)), method: :delete, class: 'rounded-full p-2 m-1 bg-red-300 hover:bg-red-400 w-20 h-10' do %>
-              Like
-            <% end %>
+  <div class="bg-white shadow-lg rounded-lg mb-6 p-4 relative"> <!-- relativeポジションをここに追加 -->
+      <div class="absolute top-2 left-2 z-20">
+  <% if current_user == card.user %>
+    <p><%= card.likes.count %> likes</p> <!-- 自分の投稿の場合、カウントのみ表示 -->
+  <% else %>
+    <% if user_signed_in? && current_user.likes.exists?(card_id: card.id) %>
+      <%= button_to card_like_path(card), method: :delete, class: 'btn bg-red-300 hover:bg-red-400 p-2 m-1 w-15 h-5 flex items-center justify-center' do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+        <span><%= card.likes.count %></span>
+      <% end %>
+    <% else %>
+      <%= button_to card_like_path(card), class: 'btn bg-gray-300 hover:bg-gray-400 p-2 m-1 w-15 h-5 flex items-center justify-center' do %>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+        <span></span>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+    <div class="absolute top-2 right-2 z-10 flex space-x-2">
+    <% if user_signed_in? && current_user == card.user %>
+        <% if !current_user.favorites.exists?(card_id: card.id) %>
+     
+          <%= button_to favorites_path(card_id: card.id), class: 'rounded-full p-2 m-1 bg-gray-300 hover:bg-gray-400 w-20 h-10' do %>
+            My list
+          <% end %>
+        <% else %>
+          <%= button_to favorite_path(current_user.favorites.find_by(card_id: card.id)), method: :delete, class: 'rounded-full p-2 m-1 bg-red-300 hover:bg-red-400 w-20 h-10' do %>
+            Favorite
           <% end %>
         <% end %>
+      <% end %>
 
-        <% if current_user && current_user != card.user %>
-          <% if current_user.watching?(card) %>
-            <%= button_to watchlist_path(current_user.watchlists.find_by(card: card)), method: :delete, class: 'p-2 m-1 bg-yellow-300 hover:bg-yellow-400 w-20 h-10' do %>
-              Watch
-            <% end %>
-          <% else %>
-            <%= button_to watchlists_path(card_id: card.id), class: 'p-2 m-1 bg-blue-300 hover:bg-blue-400 w-20 h-10' do %>
-              Unwatch
-            <% end %>
+       <% if user_signed_in? && current_user != card.user %>
+        <% if current_user.watching?(card) %>
+      
+          <%= button_to watchlist_path(current_user.watchlists.find_by(card: card)), method: :delete, class: 'p-2 m-1 bg-yellow-300 hover:bg-yellow-400 w-20 h-10' do %>
+            Watch
+          <% end %>
+        <% else %>
+          <%= button_to watchlists_path(card_id: card.id), class: 'p-2 m-1 bg-gray-300 hover:bg-gray-400 w-20 h-10' do %>
+            Other list
           <% end %>
         <% end %>
-      </div>
-
+      <% end %>
+    </div>
+   
       <div class="flex flex-col space-y-10 pt-10">
-        <div class="flex items-center space-x-4">
-          <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-20 h-28 object-cover rounded-lg">
+        <div class="flex items-center space-x-4 space-y-4">
+          <img src="<%= card.book.image_url %>" alt="Book Cover" class="w-25 h-35 object-cover rounded-lg mt-4">
+
           <div>
             <h2 class="text-xl font-semibold mb-2"><%= card.book.title %></h2>
-            <p><strong>投稿者:</strong> <%= card.user ? card.user.name : "不明" %></p>
+            <div class="flex items-center">
+            <% if card.user %>
+              <div class="flex items-center space-x-2">
+                <% if card.user.profile_image? %>
+                  <%= image_tag(card.user.profile_image.url, alt: "Profile Image", class: "rounded-full w-8 h-8 shadow-md") %>
+                <% end %>
+                <strong>投稿者:</strong>
+                <p><%= card.user.name %></p>
+              </div>
+            <% else %>
+              <p>不明</p>
+            <% end %>
+          </div>
             <p><strong>著者:</strong> <%= card.book.author %></p>
             <p><strong>出版社:</strong> <%= card.book.publisher %></p>
             <p><strong>出版日:</strong> <%= card.book.published_date %></p>
@@ -76,10 +109,12 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         
         <div class="mt-2 flex space-x-2">
-          <%= link_to '詳細', card_path(card), class: 'flex-1 px-4 py-2 bg-teal-300 text-white rounded hover:bg-teal-400 text-center' %>
+          <%= link_to '詳細', book_card_path(card.book, card), class: 'flex-1 px-4 py-2 bg-teal-300 text-white rounded hover:bg-teal-400 text-center' %>
+
           <% if current_user == card.user %>
-            <%= link_to '編集', edit_card_path(card), class: 'flex-1 px-4 py-2 bg-blue-300 text-white rounded hover:bg-blue-400 text-center' %> 
-            <%= button_to '削除', card, method: :delete, class: 'flex-1 px-4 py-2 bg-red-300 text-white rounded hover:bg-red-400 text-center', data: { confirm: '本当に削除しますか？' } %>
+          <%= link_to '編集', edit_book_card_path(card.book, card), class: 'flex-1 px-4 py-2 bg-blue-300 text-white rounded hover:bg-blue-400 text-center' %>
+          <%= button_to '削除', [card.book, card], method: :delete, class: 'flex-1 px-4 py-2 bg-red-300 text-white rounded hover:bg-red-400 text-center', data: { confirm: '本当に削除しますか？' } %>    
+
           <% end %>
         </div>
       </div>
